@@ -47,7 +47,9 @@ def chat():
         )
 
         answer = response.choices[0].message.content
-        return jsonify({"answer": answer})
+        formatted_answer = answer.replace("\n", "<br>• ")  # Add bullet points
+	return jsonify({"answer": f"• {formatted_answer}"})
+
 
     return jsonify({"answer": "Sorry, I couldn't find an answer. Try asking differently."})
 

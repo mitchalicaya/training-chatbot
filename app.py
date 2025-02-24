@@ -39,9 +39,12 @@ def chat():
         prompt = f"Based on the following training book content, answer the question:\n\n{context}\n\nUser Question: {user_query}\n\nAnswer:"
 
         response = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",
-            messages=[{"role": "user", "content": prompt}]
-        )
+    model="gpt-3.5-turbo",
+    messages=[{"role": "system", "content": "You are a helpful assistant."},
+              {"role": "user", "content": prompt}]
+)
+answer = response["choices"][0]["message"]["content"]
+
 
         return jsonify({"answer": response["choices"][0]["message"]["content"]})
 

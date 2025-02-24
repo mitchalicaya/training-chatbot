@@ -50,8 +50,7 @@ def chat():
         formatted_answer = answer.replace("\n", "<br>• ")  # Add bullet points
 	return jsonify({"answer": f"• {formatted_answer}"})
 
-
-    return jsonify({"answer": "Sorry, I couldn't find an answer. Try asking differently."})
+    	return jsonify({"answer": "Sorry, I couldn't find an answer. Try asking differently."})
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)

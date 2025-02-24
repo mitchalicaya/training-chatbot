@@ -15,7 +15,9 @@ with open("training_text.txt", "r", encoding="utf-8") as f:
 clean_text = re.sub(r'[^\x00-\x7F]+', ' ', training_text)
 paragraphs = [p.strip() for p in clean_text.split("\n\n") if len(p.strip()) > 100]
 
-app = Flask(__name__)
+from flask import Flask, render_template
+
+app = Flask(__name__, template_folder="templates")
 
 @app.route("/chat", methods=["GET"])
 def chat():
@@ -56,3 +58,7 @@ def chat():
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
+
+@app.route("/")
+def home():
+    return render_template("index.html")

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; margin: 50px; }
+        input, button { font-size: 16px; padding: 10px; margin-top: 10px; }
+        #response { margin-top: 20px; font-size: 18px; }
+    </style>
+</head>
+<body>
+    <h1>Training Chatbot</h1>
+    <p>Ask me anything about training!</p>
+    <input type="text" id="question" placeholder="Type your question here...">
+    <button onclick="askChatbot()">Ask</button>
+    <p id="response"></p>
+
+    <script>
+        function askChatbot() {
+            var question = document.getElementById("question").value;
+            if (!question) {
+                alert("Please enter a question!");
+                return;
+            }
+
+            fetch("/chat?question=" + encodeURIComponent(question))
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById("response").innerHTML = data.answer;
+                })
+                .catch(error => {
+                    document.getElementById("response").innerHTML = "Error: Unable to get response.";
+                });
+        }
+    </script>
+</body>
+</html>

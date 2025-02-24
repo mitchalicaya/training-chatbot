@@ -25,7 +25,7 @@
             color: #333;
         }
 
-        #search-box {
+        input {
             width: 500px;
             padding: 10px;
             font-size: 18px;
@@ -34,9 +34,10 @@
             outline: none;
             text-align: left;
             box-shadow: none;
+            margin-bottom: 10px;
         }
 
-        #search-box:focus {
+        #search-box:focus, #password-box:focus {
             border-color: #4285f4;
             box-shadow: 0px 0px 5px rgba(66, 133, 244, 0.5);
         }
@@ -48,7 +49,7 @@
             font-size: 14px;
             border-radius: 4px;
             cursor: pointer;
-            margin-top: 20px;
+            margin-top: 10px;
         }
 
         #search-button:hover {
@@ -67,6 +68,9 @@
 </head>
 <body>
     <h1>Training Chatbot</h1>
+    <p>Ask me anything about training!</p>
+    
+    <input type="password" id="password-box" placeholder="Enter password"><br>
     <input type="text" id="search-box" placeholder="Type your question here...">
     <br>
     <button id="search-button" onclick="askChatbot()">Ask Chatbot</button>
@@ -74,16 +78,22 @@
 
     <script>
         function askChatbot() {
+            var password = document.getElementById("password-box").value;
             var question = document.getElementById("search-box").value;
-            if (!question) {
-                alert("Please enter a question!");
+
+            if (!password || !question) {
+                alert("Please enter both password and question!");
                 return;
             }
 
-            fetch("/chat?question=" + encodeURIComponent(question))
+            fetch("/chat?password=" + encodeURIComponent(password) + "&question=" + encodeURIComponent(question))
                 .then(response => response.json())
                 .then(data => {
-                    document.getElementById("response").innerHTML = data.answer;
+                    if (data.error) {
+                        document.getElementById("response").innerHTML = "<b style='color:red'>" + data.error + "</b>";
+                    } else {
+                        document.getElementById("response").innerHTML = data.answer;
+                    }
                 })
                 .catch(error => {
                     document.getElementById("response").innerHTML = "Error: Unable to get response.";

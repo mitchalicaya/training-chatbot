@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 import openai
 import re
 from fuzzywuzzy import process
@@ -6,6 +6,9 @@ import os
 
 # ✅ Load API Key from Environment Variable
 openai.api_key = os.getenv("OPENAI_API_KEY")
+
+# ✅ Set a Password for Access
+ACCESS_PASSWORD = "training123"  # Change this to any password you want
 
 # ✅ Load training text from file
 with open("training_text.txt", "r", encoding="utf-8") as f:
@@ -15,13 +18,19 @@ with open("training_text.txt", "r", encoding="utf-8") as f:
 clean_text = re.sub(r'[^\x00-\x7F]+', ' ', training_text)
 paragraphs = [p.strip() for p in clean_text.split("\n\n") if len(p.strip()) > 100]
 
-from flask import Flask, render_template
-
 app = Flask(__name__, template_folder="templates")
+
+@app.route("/")
+def home():
+    return render_template("index.html")
 
 @app.route("/chat", methods=["GET"])
 def chat():
+    password = request.args.get("password", "").strip()
     user_query = request.args.get("question", "").strip()
+
+    if password != ACCESS_PASSWORD:
+        return jsonify({"error": "Unauthorized. Please provide the correct password."}), 403
 
     if not user_query:
         return jsonify({"error": "Please provide a question"}), 400
@@ -58,7 +67,3 @@ def chat():
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
-
-@app.route("/")
-def home():
-    return render_template("index.html")
